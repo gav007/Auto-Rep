@@ -1,9 +1,6 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
-import ws from "ws";
-import * as schema from "@shared/schema";
-
-neonConfig.webSocketConstructor = ws;
+import { Pool } from 'pg';  // Standard Postgres client for Node.js
+import { drizzle } from 'drizzle-orm/node-postgres';  // Drizzle's local Postgres adapter
+import * as schema from "@shared/schema";  // Your DB schema
 
 if (!process.env.DATABASE_URL) {
   throw new Error(
