@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BottomNav } from '@/components/bottom-nav';
 import { ProgressChart } from '@/components/progress-chart';
 import { Share2, TrendingUp, Calendar, Target, Zap } from 'lucide-react';
-import type { ProgressRecord, WorkoutSet, Workout } from '@shared/schema';
+import type { ProgressRecord, WorkoutSet, Workout, Exercise } from '@shared/schema';
 
 export default function Progress() {
   const [, setLocation] = useLocation();
@@ -23,16 +23,16 @@ export default function Progress() {
   }, [setLocation]);
 
   const { data: progressRecords = [] } = useQuery<ProgressRecord[]>({
-    queryKey: ['/api/progress', userId],
+    queryKey: [`/api/progress/${userId}`],
     enabled: !!userId
   });
 
   const { data: workouts = [] } = useQuery<Workout[]>({
-    queryKey: ['/api/workouts', userId],
+    queryKey: [`/api/workouts/${userId}`],
     enabled: !!userId
   });
 
-  const { data: exercises = [] } = useQuery({
+  const { data: exercises = [] } = useQuery<Exercise[]>({
     queryKey: ['/api/exercises']
   });
 
@@ -172,7 +172,7 @@ export default function Progress() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {exercises.slice(0, 5).map((exercise: any) => {
+                  {exercises.slice(0, 5).map((exercise) => {
                     const record = progressRecords.find(r => r.exerciseId === exercise.id);
                     const bestSet = record?.bestSet as any;
                     

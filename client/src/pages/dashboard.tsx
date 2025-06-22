@@ -26,7 +26,7 @@ export default function Dashboard() {
   }, [setLocation]);
 
   const { data: user } = useQuery<User>({
-    queryKey: ['/api/users', userId],
+    queryKey: [`/api/users/${userId}`],
     enabled: !!userId
   });
 

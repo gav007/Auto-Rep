@@ -9,13 +9,13 @@ export function useWorkout(userId: number) {
 
   // Get active workout
   const { data: activeWorkoutData, isLoading: loadingActive } = useQuery({
-    queryKey: ['/api/workouts', userId, 'active'],
+    queryKey: [`/api/workouts/${userId}/active`],
     enabled: !!userId
   });
 
   // Get workout sets for active workout
   const { data: workoutSets = [], isLoading: loadingSets } = useQuery({
-    queryKey: ['/api/workout-sets', activeWorkoutData?.id],
+    queryKey: [`/api/workout-sets/${activeWorkoutData?.id}`],
     enabled: !!activeWorkoutData?.id
   });
 

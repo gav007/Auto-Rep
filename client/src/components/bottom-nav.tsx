@@ -26,14 +26,12 @@ export function BottomNav({ className }: BottomNavProps) {
           const isActive = location === path;
           
           return (
-            <Link key={path} href={path}>
-              <a className={cn(
-                'flex flex-col items-center py-2 px-4 transition-colors',
-                isActive ? 'text-primary' : 'text-gray-400 hover:text-gray-600'
-              )}>
-                <Icon size={20} className="mb-1" />
-                <span className="text-xs">{label}</span>
-              </a>
+            <Link key={path} href={path} className={cn(
+              'flex flex-col items-center py-2 px-4 transition-colors',
+              isActive ? 'text-primary' : 'text-gray-400 hover:text-gray-600'
+            )}>
+              <Icon size={20} className="mb-1" />
+              <span className="text-xs">{label}</span>
             </Link>
           );
         })}
