@@ -1,0 +1,37 @@
+AutoRep: The Future-Proof, Voice-First Smart Workout App
+Picture this: you want to get fitter, but every fitness app is the same oul’ shite—click this, log that, read a blog from some influencer who’s never even set foot in Ballymun. AutoRep is different. This isn’t just a digital logbook or a calorie counter. This is your personal gym coach, your session planner, and your accountability mate—all rolled into one, driven by AI and proper feedback, and powered by your own voice.
+Seamless Onboarding—No Nonsense, No Hassle
+From the second you open AutoRep, it gets straight to the point. First-timers don’t get dumped into some blank screen or confusing menu. Instead, the app walks you through a quick, smart onboarding process—voice-powered or with simple toggles if you prefer. It’ll ask:
+What gear you’ve got (dumbbells, barbell, bands, bodyweight only, whatever)
+What your main goals are (build muscle, lose fat, move better, or just survive the feckin’ week)
+How many days you want to train, what days you can actually commit, and how much time you’ve got
+Any injuries, restrictions, or things you bloody hate (lookin’ at you, burpees)
+No faffing about. You talk, it listens. You tap, it takes note. The result? A custom-built workout template for your real life—not some copy-paste 30-day challenge. This isn’t a plan you have to force yourself to follow; it’s a plan built for you.
+Your Program, Your Progress, Your Pace
+Once you’re set up, every week starts with a program that fits your kit, your schedule, and your goals. Maybe it’s three days with dumbbells and a resistance band in a tiny gaff, or a full powerlifting split at the local gym. You see your template, hit “Start Workout,” and the magic begins.
+During your session, it’s hands-free as much as possible.
+Just talk to AutoRep: “Bench press, 60 kilos for 8 reps.”
+It logs the set—no more fumbling with sweaty phones.
+The camera can even count reps for squats or push-ups, if you let it.
+You finish a set, rest, then call out your next lift.
+It tracks your sets, reps, and weight automatically, so you can stay focused on lifting—not on tapping screens.
+Proper Accountability & Real Feedback
+Here’s where the real AI comes in. After each session—and especially after a week or two—AutoRep doesn’t just store your numbers. It analyzes them.
+Did your bench sets drop off this week?
+Did your squat volume shoot up?
+Are you pushing too hard, or sandbagging a bit?
+AutoRep gives you feedback, not just stats.
+“You hit all your reps last week, up the weight next time.”
+“Your last sets dropped, consider backing off or resting another day.”
+“You’ve been stuck on 8 reps for three weeks—try an extra set or a different grip.”
+And it’s all delivered in plain English, not in buzzwordy fitness jargon. The app uses basic stats, linear regression, and even some machine learning to spot trends—so you always know if you’re moving forward, spinning your wheels, or risking burnout.
+Voice and Touch—Accessible For Everyone
+You don’t need to be a tech wizard, and you definitely don’t need to be glued to your phone. AutoRep is designed so you can do almost everything with your voice, but there’s always a button or toggle if you want to tap instead. Whether you’re mid-set, short of breath, or just can’t be arsed scrolling, it’s got you covered.
+Build For Expansion—And Real People
+This isn’t some rigid, “do it our way or piss off” type of app. You can always override AutoRep’s suggestions. Maybe the AI tells you to deload, but you feel grand—do what you want. The whole thing is modular:
+New exercises can be added
+Progress history and charts get richer over time
+You can set reminders, challenge yourself, and even share progress with mates (down the line)
+The End Goal—Something You’d Actually Use
+AutoRep’s main purpose is to get rid of all the bollocks and barriers in fitness apps. It’s about making things simple, smart, and personal—so you keep showing up, keep getting better, and don’t waste time second-guessing every session. No more guesswork, no more generic plans, and no more half-arsed tracking.
+If you want a coach in your pocket that actually gives a shite, listens, learns, and keeps you on track—AutoRep’s your only man.
