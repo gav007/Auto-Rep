@@ -7,6 +7,8 @@ import {
   type WorkoutSet, type InsertWorkoutSet,
   type ProgressRecord, type InsertProgressRecord
 } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // Users
@@ -290,4 +292,160 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async updateUser(id: number, updates: Partial<InsertUser>): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set(updates)
+      .where(eq(users.id, id))
+      .returning();
+    return user || undefined;
+  }
+
+  async getWorkoutTemplates(userId: number): Promise<WorkoutTemplate[]> {
+    return await db.select().from(workoutTemplates).where(eq(workoutTemplates.userId, userId));
+  }
+
+  async getWorkoutTemplate(id: number): Promise<WorkoutTemplate | undefined> {
+    const [template] = await db.select().from(workoutTemplates).where(eq(workoutTemplates.id, id));
+    return template || undefined;
+  }
+
+  async createWorkoutTemplate(template: InsertWorkoutTemplate): Promise<WorkoutTemplate> {
+    const [created] = await db
+      .insert(workoutTemplates)
+      .values(template)
+      .returning();
+    return created;
+  }
+
+  async getWorkouts(userId: number): Promise<Workout[]> {
+    return await db.select().from(workouts).where(eq(workouts.userId, userId));
+  }
+
+  async getWorkout(id: number): Promise<Workout | undefined> {
+    const [workout] = await db.select().from(workouts).where(eq(workouts.id, id));
+    return workout || undefined;
+  }
+
+  async getActiveWorkout(userId: number): Promise<Workout | undefined> {
+    const [workout] = await db
+      .select()
+      .from(workouts)
+      .where(eq(workouts.userId, userId))
+      .limit(1);
+    return workout || undefined;
+  }
+
+  async createWorkout(workout: InsertWorkout): Promise<Workout> {
+    const [created] = await db
+      .insert(workouts)
+      .values(workout)
+      .returning();
+    return created;
+  }
+
+  async updateWorkout(id: number, updates: Partial<InsertWorkout>): Promise<Workout | undefined> {
+    const [workout] = await db
+      .update(workouts)
+      .set(updates)
+      .where(eq(workouts.id, id))
+      .returning();
+    return workout || undefined;
+  }
+
+  async getExercises(): Promise<Exercise[]> {
+    return await db.select().from(exercises);
+  }
+
+  async getExercisesByEquipment(equipment: string[]): Promise<Exercise[]> {
+    // For now, return all exercises - we'll improve this filter later
+    return await db.select().from(exercises);
+  }
+
+  async getExercise(id: number): Promise<Exercise | undefined> {
+    const [exercise] = await db.select().from(exercises).where(eq(exercises.id, id));
+    return exercise || undefined;
+  }
+
+  async createExercise(exercise: InsertExercise): Promise<Exercise> {
+    const [created] = await db
+      .insert(exercises)
+      .values(exercise)
+      .returning();
+    return created;
+  }
+
+  async getWorkoutSets(workoutId: number): Promise<WorkoutSet[]> {
+    return await db.select().from(workoutSets).where(eq(workoutSets.workoutId, workoutId));
+  }
+
+  async createWorkoutSet(set: InsertWorkoutSet): Promise<WorkoutSet> {
+    const [created] = await db
+      .insert(workoutSets)
+      .values(set)
+      .returning();
+    return created;
+  }
+
+  async updateWorkoutSet(id: number, updates: Partial<InsertWorkoutSet>): Promise<WorkoutSet | undefined> {
+    const [set] = await db
+      .update(workoutSets)
+      .set(updates)
+      .where(eq(workoutSets.id, id))
+      .returning();
+    return set || undefined;
+  }
+
+  async getProgressRecord(userId: number, exerciseId: number): Promise<ProgressRecord | undefined> {
+    const [record] = await db
+      .select()
+      .from(progressRecords)
+      .where(eq(progressRecords.userId, userId))
+      .limit(1);
+    return record || undefined;
+  }
+
+  async updateProgressRecord(record: InsertProgressRecord): Promise<ProgressRecord> {
+    const existing = await this.getProgressRecord(record.userId, record.exerciseId);
+    
+    if (existing) {
+      const [updated] = await db
+        .update(progressRecords)
+        .set(record)
+        .where(eq(progressRecords.id, existing.id))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db
+        .insert(progressRecords)
+        .values(record)
+        .returning();
+      return created;
+    }
+  }
+
+  async getUserProgress(userId: number): Promise<ProgressRecord[]> {
+    return await db.select().from(progressRecords).where(eq(progressRecords.userId, userId));
+  }
+}
+
+export const storage = new DatabaseStorage();

@@ -8,16 +8,21 @@ export function useWorkout(userId: number) {
   const [activeWorkout, setActiveWorkout] = useState<Workout | null>(null);
 
   // Get active workout
-  const { data: activeWorkoutData, isLoading: loadingActive } = useQuery({
+  const { data: activeWorkoutData, isLoading: loadingActive } = useQuery<Workout>({
     queryKey: [`/api/workouts/${userId}/active`],
     enabled: !!userId
   });
 
   // Get workout sets for active workout
-  const { data: workoutSets = [], isLoading: loadingSets } = useQuery({
-    queryKey: [`/api/workout-sets/${activeWorkoutData?.id}`],
+  const { data: workoutSets = [], isLoading: loadingSets } = useQuery<WorkoutSet[]>({
+    queryKey: [`/api/workout-sets`, activeWorkoutData?.id],
     enabled: !!activeWorkoutData?.id
   });
+
+  // Set active workout when data is loaded
+  if (activeWorkoutData && !activeWorkout) {
+    setActiveWorkout(activeWorkoutData);
+  }
 
   // Start new workout
   const startWorkoutMutation = useMutation({
@@ -41,7 +46,7 @@ export function useWorkout(userId: number) {
     mutationFn: async (workoutId: number) => {
       const response = await apiRequest('PUT', `/api/workouts/${workoutId}`, {
         completedAt: new Date().toISOString(),
-        duration: calculateWorkoutDuration(activeWorkoutData?.startedAt)
+        duration: activeWorkout?.startedAt ? calculateWorkoutDuration(activeWorkout.startedAt.toISOString()) : 0
       });
       return response.json();
     },

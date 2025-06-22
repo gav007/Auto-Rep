@@ -242,11 +242,11 @@ export default function Progress() {
                           <div className="w-20 h-2 bg-gray-200 rounded-full">
                             <div 
                               className="h-2 bg-primary rounded-full"
-                              style={{ width: `${Math.min((record.totalVolume / 1000) * 100, 100)}%` }}
+                              style={{ width: `${Math.min(((record.totalVolume || 0) / 1000) * 100, 100)}%` }}
                             />
                           </div>
                           <span className="text-sm font-medium w-16 text-right">
-                            {Math.round(record.totalVolume)}kg
+                            {Math.round(record.totalVolume || 0)}kg
                           </span>
                         </div>
                       </div>
