@@ -34,6 +34,8 @@ export default function Onboarding() {
   const [selectedEquipment, setSelectedEquipment] = useState<EquipmentType[]>([]);
   const [selectedGoal, setSelectedGoal] = useState<GoalType | ''>('');
   const [trainingDays, setTrainingDays] = useState(3);
+  const [sessionTime, setSessionTime] = useState(45);
+  const [limitations, setLimitations] = useState('');
 
   const createUserMutation = useMutation({
     mutationFn: async (userData: any) => {
@@ -105,12 +107,22 @@ export default function Onboarding() {
     // Parse training days
     const daysMatch = normalizedInput.match(/(\d+)\s*days?/);
     const detectedDays = daysMatch ? parseInt(daysMatch[1]) : 3;
+
+    // Parse session time
+    const timeMatch = normalizedInput.match(/(\d+)\s*(?:minutes|min)/);
+    const detectedTime = timeMatch ? parseInt(timeMatch[1]) : 45;
+
+    // Parse limitations or dislikes
+    const limitationMatch = normalizedInput.match(/(?:injury|injuries|hate|avoid)\s(.+)/);
+    const detectedLimitations = limitationMatch ? limitationMatch[1].trim() : '';
     
     setSelectedEquipment(detectedEquipment);
     setSelectedGoal(detectedGoal);
     setTrainingDays(Math.min(Math.max(detectedDays, 1), 7));
+    setSessionTime(Math.min(Math.max(detectedTime, 10), 120));
+    setLimitations(detectedLimitations);
     
-    speak(`Got it! I detected ${detectedEquipment.join(' and ')} for equipment, with a goal to ${detectedGoal.replace('-', ' ')}, ${detectedDays} days per week.`);
+    speak(`Got it! I detected ${detectedEquipment.join(' and ')} for equipment, with a goal to ${detectedGoal.replace('-', ' ')}, ${detectedDays} days per week, about ${detectedTime} minutes per session.`);
   };
 
   const handleCompleteOnboarding = () => {
@@ -137,7 +149,9 @@ export default function Onboarding() {
       name: 'AutoRep User',
       equipment: selectedEquipment,
       goals: selectedGoal,
-      trainingDays
+      trainingDays,
+      sessionTime,
+      limitations
     });
   };
 
@@ -200,8 +214,50 @@ export default function Onboarding() {
                   ))}
                 </div>
               )}
-            </CardContent>
-          </Card>
+          </CardContent>
+        </Card>
+
+        {/* Session Time */}
+        <Card>
+          <CardContent className="p-6">
+            <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
+              <span className="w-6 h-6 bg-primary text-white rounded-full text-xs flex items-center justify-center mr-3">4</span>
+              How long is each session?
+            </h3>
+            <div className="flex justify-center space-x-2">
+              {[20,30,45,60,90].map(time => (
+                <Button
+                  key={time}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSessionTime(time)}
+                  className={`w-14 h-10 ${
+                    sessionTime === time ? 'border-primary bg-blue-50 text-primary' : 'border-gray-200'
+                  }`}
+                >
+                  {time}m
+                </Button>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Injuries / dislikes */}
+        <Card>
+          <CardContent className="p-6">
+            <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
+              <span className="w-6 h-6 bg-primary text-white rounded-full text-xs flex items-center justify-center mr-3">5</span>
+              Any injuries or hated moves?
+            </h3>
+            <input
+              type="text"
+              value={limitations}
+              onChange={e => setLimitations(e.target.value)}
+              className="w-full border border-gray-300 rounded-md p-2 text-sm"
+              placeholder="e.g. shoulder injury, no burpees"
+            />
+          </CardContent>
+        </Card>
 
           {/* Goal Selection */}
           <Card>

@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { calculateOneRepMax, parseVoiceCommand } from "./utils";
 import { insertUserSchema, insertWorkoutSchema, insertWorkoutSetSchema, insertWorkoutTemplateSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -166,6 +167,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Weekly plan generation
+  app.get("/api/weekly-plan/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const user = await storage.getUser(userId);
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      const exercises = await storage.getExercisesByEquipment(user.equipment);
+      const plan = [] as any[];
+      for (let d = 0; d < user.trainingDays; d++) {
+        const dayExercises = exercises.slice((d * 5) % exercises.length, ((d * 5) % exercises.length) + 5);
+        plan.push({
+          day: d + 1,
+          exercises: dayExercises.map(e => ({ id: e.id, name: e.name }))
+        });
+      }
+
+      res.json({ days: plan, sessionTime: user.sessionTime });
+    } catch (error) {
+      res.status(500).json({ message: "Error generating plan", error });
+    }
+  });
+
   // AI Coaching endpoint
   app.post("/api/ai-coaching/:userId", async (req, res) => {
     try {
@@ -246,10 +270,6 @@ async function updateProgressAfterSet(set: any) {
   await storage.updateProgressRecord(progressUpdate);
 }
 
-function calculateOneRepMax(weight: number, reps: number): number {
-  // Epley formula: 1RM = weight * (1 + reps/30)
-  return weight * (1 + reps / 30);
-}
 
 function generateCoachingSuggestion(user: any, progress: any, recentWorkouts: any[]): string {
   if (!progress) {
@@ -274,22 +294,3 @@ function generateCoachingSuggestion(user: any, progress: any, recentWorkouts: an
   return suggestions[Math.floor(Math.random() * suggestions.length)];
 }
 
-function parseVoiceCommand(command: string): any {
-  // Simple voice command parsing
-  // Expected format: "Exercise name, weight kg/kilos for reps reps"
-  const regex = /(.+?),?\s*(\d+(?:\.\d+)?)\s*(?:kg|kilos?)\s*(?:for\s*)?(\d+)\s*(?:reps?)?/i;
-  const match = command.match(regex);
-  
-  if (match) {
-    return {
-      type: 'log_set',
-      exerciseName: match[1].trim(),
-      weight: parseFloat(match[2]),
-      reps: parseInt(match[3]),
-      exerciseId: 1, // This would need to be resolved from exercise name
-      setNumber: 1 // This would need to be calculated
-    };
-  }
-  
-  return { type: 'unknown' };
-}

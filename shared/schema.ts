@@ -9,6 +9,8 @@ export const users = pgTable("users", {
   equipment: text("equipment").array().notNull().default([]),
   goals: text("goals").notNull(),
   trainingDays: integer("training_days").notNull().default(3),
+  sessionTime: integer("session_time").notNull().default(45),
+  limitations: text("limitations"),
   preferredRestTime: integer("preferred_rest_time").notNull().default(120),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
