@@ -49,6 +49,22 @@ shared/            TypeScript types and Drizzle schema shared by server and clie
 
 Other root files include `package.json` for scripts and dependencies, `vite.config.ts` for build configuration and Tailwind/postcss config for styling.
 
+## Testing
+
+Unit tests run with [Vitest](https://vitest.dev/) and React Testing Library. End-to-end tests are written with Cypress.
+
+Run unit tests:
+
+```bash
+npm test
+```
+
+With the dev server listening on port 5000 you can run Cypress:
+
+```bash
+npm run test:e2e
+```
+
 ## Feature Summary
 
 - Voice‑powered onboarding and workout logging
