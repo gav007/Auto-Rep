@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { calculateOneRepMax, parseVoiceCommand } from "./utils";
 import { insertUserSchema, insertWorkoutSchema, insertWorkoutSetSchema, insertWorkoutTemplateSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -246,10 +247,6 @@ async function updateProgressAfterSet(set: any) {
   await storage.updateProgressRecord(progressUpdate);
 }
 
-function calculateOneRepMax(weight: number, reps: number): number {
-  // Epley formula: 1RM = weight * (1 + reps/30)
-  return weight * (1 + reps / 30);
-}
 
 function generateCoachingSuggestion(user: any, progress: any, recentWorkouts: any[]): string {
   if (!progress) {
@@ -274,22 +271,3 @@ function generateCoachingSuggestion(user: any, progress: any, recentWorkouts: an
   return suggestions[Math.floor(Math.random() * suggestions.length)];
 }
 
-function parseVoiceCommand(command: string): any {
-  // Simple voice command parsing
-  // Expected format: "Exercise name, weight kg/kilos for reps reps"
-  const regex = /(.+?),?\s*(\d+(?:\.\d+)?)\s*(?:kg|kilos?)\s*(?:for\s*)?(\d+)\s*(?:reps?)?/i;
-  const match = command.match(regex);
-  
-  if (match) {
-    return {
-      type: 'log_set',
-      exerciseName: match[1].trim(),
-      weight: parseFloat(match[2]),
-      reps: parseInt(match[3]),
-      exerciseId: 1, // This would need to be resolved from exercise name
-      setNumber: 1 // This would need to be calculated
-    };
-  }
-  
-  return { type: 'unknown' };
-}
