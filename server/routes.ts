@@ -167,6 +167,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Weekly plan generation
+  app.get("/api/weekly-plan/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const user = await storage.getUser(userId);
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      const exercises = await storage.getExercisesByEquipment(user.equipment);
+      const plan = [] as any[];
+      for (let d = 0; d < user.trainingDays; d++) {
+        const dayExercises = exercises.slice((d * 5) % exercises.length, ((d * 5) % exercises.length) + 5);
+        plan.push({
+          day: d + 1,
+          exercises: dayExercises.map(e => ({ id: e.id, name: e.name }))
+        });
+      }
+
+      res.json({ days: plan, sessionTime: user.sessionTime });
+    } catch (error) {
+      res.status(500).json({ message: "Error generating plan", error });
+    }
+  });
+
   // AI Coaching endpoint
   app.post("/api/ai-coaching/:userId", async (req, res) => {
     try {
